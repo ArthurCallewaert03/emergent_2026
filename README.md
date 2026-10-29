@@ -1,10 +1,43 @@
-# MSF Document Navigator — D4GC 2026
+# MSF Document Research — D4GC 2026
 
-An offline Streamlit prototype for searching the supplied MSF document collection.
-It supports document search, source downloads, and optional answers from a local
-Ollama model. This is an independent Data 4 Good project.
+A research workspace for finding relevant information in the MSF document collection
+and quickly exploring related sources. The aim is to find the **needle in the
+haystack** with search and retrieval-augmented generation (RAG), then use the
+knowledge graph to discover potentially related documents and build context faster.
 
-## Setup and launch
+| Application | Use it for |
+| --- | --- |
+| **Document Navigator** (`app.py`) | Search document text, retrieve passages, draft answers with a local Ollama model, and inspect or download original sources. |
+| **[Document Constellation](msf-document-constellation/README.md)** | Explore the knowledge graph, select a promising document, and follow its **Similar documents** list to broaden your research. |
+
+This is an independent Data 4 Good prototype. Related documents are research leads;
+inspect their contents to decide whether they support your question.
+
+The [final pitch presentation (PDF)](final_pitch.pdf) is included in this repository.
+
+## Research workflow
+
+1. **Find the needle.** Use **Find documents** for keywords or **Ask LLM** for a
+   natural-language question. RAG retrieves documents and passages before asking
+   the local model to draft an answer.
+2. **Check the evidence.** Review the passages, document IDs, and original sources
+   shown by the Navigator. Keep the ID of a useful document.
+3. **Explore its neighbourhood.** Append `?doc=<document-id>` to the Constellation
+   URL to select that document, provided it exists in the graph dataset. You can
+   also search the graph by title or snippet.
+4. **Follow related leads.** Select entries under **Similar documents** and use
+   theme, genre, language, country, and year filters to focus the map.
+5. **Read and refine.** Use the selected IDs to locate Markdown files in
+   `data/corpus/Parsed/` and original PDF/HTML files in `data/corpus/Original/`,
+   where available. Return to the Navigator with more specific search terms or
+   questions as your understanding improves.
+
+The applications currently run separately. Moving from a RAG result to the graph
+is a manual step using the document ID; graph neighbours are not automatically
+added to the RAG context. The graph's title/snippet search is separate from the
+Navigator's document-text search.
+
+## Launch the Document Navigator
 
 Use Python 3.11 or newer. From the repository root:
 
@@ -20,10 +53,31 @@ The supplied local data and enriched metadata must be present. Search runs offli
 Ask LLM and Find partners additionally require a running Ollama service and a
 downloaded model (`qwen3:4b` is the default when available).
 
+## Launch the knowledge graph
+
+In a second terminal, from the repository root, with Node.js and npm installed:
+
+```powershell
+cd msf-document-constellation
+npm install
+npm run dev
+```
+
+Open the local URL printed by the development server. Append
+`/?doc=<document-id>` to its origin to open a specific document.
+See the [Constellation README](msf-document-constellation/README.md) for graph
+controls, data configuration, and development commands.
+
+The graph currently fetches a separately supplied JSON dataset from a remote URL,
+so it needs network access to load that dataset. It does not automatically rebuild
+from `data/corpus/` or the enriched CSV. The Navigator's local search remains offline.
+
 ## Project layout
 
 ```text
 app.py                       Streamlit entry point
+final_pitch.pdf              Final pitch presentation
+msf-document-constellation/   Web knowledge graph and related-document explorer
 assets/                      Local logo and theme
 src/msf_navigator/            Search, retrieval, enrichment, and shared paths
 scripts/                     Notebook generation scripts

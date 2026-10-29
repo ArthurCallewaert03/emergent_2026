@@ -1,5 +1,21 @@
 # D4GC document analysis
 
+## Research workflow and knowledge graph
+
+The [main README](../README.md#research-workflow) describes how to use the two
+applications together: find relevant documents and passages with the Navigator's
+search/RAG workflow, inspect the evidence, then explore possible related documents
+in the [Document Constellation knowledge graph](../msf-document-constellation/README.md).
+This supports faster discovery and follow-up reading around an initial finding.
+
+The graph accepts a document ID through `?doc=<document-id>` and shows connected
+documents ordered by the supplied edge weight. Its filters cover theme, genre,
+language, country, and year; text search covers titles and snippets. The graph
+loads a separate remote JSON dataset with precomputed positions and connections.
+It does not currently refresh from the local corpus or feed related documents
+automatically into RAG. Check that an ID exists in both datasets when moving
+between the tools, and verify relevance against the original source.
+
 ## Document navigator
 
 Run `python -m streamlit run app.py` from the repository root. The app indexes all 582 available parsed documents with a local BM25 implementation, searches by query terms, and offers language, genre, country mention, and topic filters. Results show a source excerpt and let the user download the original PDF or HTML. The index is cached in memory while the app runs; restart it after changing documents or metadata. The app requires `streamlit`; the search core uses only the Python standard library.
