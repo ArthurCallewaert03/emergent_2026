@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "msf-document-navigator"
+version = "0.1.0"
+description = "Offline document search for the D4GC 2026 challenge"
+requires-python = ">=3.11"
+dependencies = ["streamlit>=1.56,<2", "PyPDF2>=3,<4"]
+
+[project.optional-dependencies]
+analysis = [
+    "pandas>=2.3,<3",
+    "numpy>=2,<3",
+    "scikit-learn>=1.8,<2",
+    "nbformat>=5.10,<6",
+    "nbclient>=0.10,<1",
+    "ipykernel>=6.29,<8",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
